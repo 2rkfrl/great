@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Camera Feed with MoveNet</title>
+    <style>
+        #container {
+            text-align: center;
+        }
+        #video_feed {
+            border: 2px solid black;
+            margin: 20px auto;
+        }
+        #status {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Camera Feed with MoveNet</h1>
+    <div id="container">
+        <img id="video_feed" src="{{ url_for('video_feed') }}" width="640" height="480">
+        <p id="status">Waiting for status...</p>
+    </div>
+
+    <script>
+        var source = new EventSource("/video_feed");
+
+        source.onmessage = function(event) {
+            if (event.data.startsWith('data:image/jpeg')) {
+                document.getElementById("video_feed").src = event.data;
+            } else {
+                document.getElementById("status").innerText = event.data;
+            }
+        };
+    </script>
+</body>
+</html>
